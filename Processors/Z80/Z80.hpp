@@ -21,7 +21,7 @@ namespace CPU {
 namespace Z80 {
 
 /*
-	The list of registers that can be accessed via @c set_value_of_register and @c set_value_of_register.
+	The list of registers that can be accessed via @c set_value_of and @c value_of.
 */
 enum class Register {
 	ProgramCounter,
@@ -411,22 +411,22 @@ class ProcessorBase: public ProcessorStorage {
 		/*!
 			Gets the value of a register.
 
-			@see set_value_of_register
+			@see set_value_of
 
 			@param r The register to set.
 			@returns The value of the register. 8-bit registers will be returned as unsigned.
 		*/
-		uint16_t get_value_of_register(Register r) const;
+		uint16_t value_of(Register r) const;
 
 		/*!
 			Sets the value of a register.
 
-			@see get_value_of_register
+			@see value_of
 
 			@param r The register to set.
 			@param value The value to set. If the register is only 8 bit, the value will be truncated.
 		*/
-		void set_value_of_register(Register r, uint16_t value);
+		void set_value_of(Register r, uint16_t value);
 
 		/*!
 			Gets the value of the HALT output line.

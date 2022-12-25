@@ -446,8 +446,8 @@ class ConcreteMachine:
 								i8255_.write(0xab, 0x8);
 
 								// Disable interrupts.
-								z80_.set_value_of_register(CPU::Z80::Register::IFF1, 0);
-								z80_.set_value_of_register(CPU::Z80::Register::IFF2, 0);
+								z80_.set_value_of(CPU::Z80::Register::IFF1, 0);
+								z80_.set_value_of(CPU::Z80::Register::IFF2, 0);
 
 								// Use the parser to find a header, and if one is found then populate
 								// LOWLIM and WINWID, and reset carry. Otherwise set carry.
@@ -456,9 +456,9 @@ class ConcreteMachine:
 								if(new_speed) {
 									ram_[0xfca4] = new_speed->minimum_start_bit_duration;
 									ram_[0xfca5] = new_speed->low_high_disrimination_duration;
-									z80_.set_value_of_register(CPU::Z80::Register::Flags, 0);
+									z80_.set_value_of(CPU::Z80::Register::Flags, 0);
 								} else {
-									z80_.set_value_of_register(CPU::Z80::Register::Flags, 1);
+									z80_.set_value_of(CPU::Z80::Register::Flags, 1);
 								}
 
 								// RET.
@@ -481,10 +481,10 @@ class ConcreteMachine:
 								// If a byte was found, return it with carry unset. Otherwise set carry to
 								// indicate error.
 								if(next_byte >= 0) {
-									z80_.set_value_of_register(CPU::Z80::Register::A, uint16_t(next_byte));
-									z80_.set_value_of_register(CPU::Z80::Register::Flags, 0);
+									z80_.set_value_of(CPU::Z80::Register::A, uint16_t(next_byte));
+									z80_.set_value_of(CPU::Z80::Register::Flags, 0);
 								} else {
-									z80_.set_value_of_register(CPU::Z80::Register::Flags, 1);
+									z80_.set_value_of(CPU::Z80::Register::Flags, 1);
 								}
 
 								// RET.

@@ -25,7 +25,7 @@ namespace CPU {
 namespace MOS6502Esque {
 
 /*
-	The list of registers that can be accessed via @c set_value_of_register and @c set_value_of_register.
+	The list of registers that can be accessed via @c set_value_of and @c value_of.
 */
 enum Register {
 	LastOperationAddress,
@@ -44,7 +44,7 @@ enum Register {
 };
 
 /*
-	Flags as defined on the 6502; can be used to decode the result of @c get_value_of_register(Flags) or to form a value for
+	Flags as defined on the 6502; can be used to decode the result of @c value_of(Flags) or to form a value for
 	the corresponding set.
 */
 enum Flag: uint8_t {

@@ -26,7 +26,7 @@ size_t HFV::get_block_size() {
 }
 
 size_t HFV::get_number_of_blocks() {
-	return mapper_.get_number_of_blocks();
+	return mapper_.number_of_blocks();
 }
 
 std::vector<uint8_t> HFV::get_block(size_t address) {

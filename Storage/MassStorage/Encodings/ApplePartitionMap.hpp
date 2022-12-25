@@ -43,7 +43,7 @@ template <typename VolumeProvider> class PartitionMap {
 		/*!
 			@returns The total number of blocks on the entire volume.
 		*/
-		size_t get_number_of_blocks() const {
+		size_t number_of_blocks() const {
 			return
 				number_of_blocks_ +				// Size of the volume.
 				size_t(non_volume_blocks());	// Size of everything else.
@@ -65,7 +65,7 @@ template <typename VolumeProvider> class PartitionMap {
 
 				const size_t source_address = mapper.to_source_address(unit_address);
 				if(is_in_range_for_partition(source_address)) {
-					return mapper.convert_source_block(source_address, get_block_contents(source_address));
+					return mapper.convert_source_block(source_address, block_contents(source_address));
 				} else {
 					return mapper.convert_source_block(source_address);
 				}
@@ -80,7 +80,7 @@ template <typename VolumeProvider> class PartitionMap {
 			// Block 0 is the device descriptor, which lists the total number of blocks,
 			// and provides an offset to the driver, if any.
 			if(!source_address) {
-				const uint32_t total_device_blocks = uint32_t(get_number_of_blocks());
+				const uint32_t total_device_blocks = uint32_t(number_of_blocks());
 				const auto driver_size = uint16_t(driver_block_size());
 				const auto driver_offset = uint16_t(predriver_blocks());
 				const uint8_t driver_count = driver_size > 0 ? 1 : 0;

@@ -17,7 +17,7 @@ namespace i8255 {
 class PortHandler {
 	public:
 		void set_value([[maybe_unused]] int port, [[maybe_unused]] uint8_t value) {}
-		uint8_t get_value([[maybe_unused]] int port) { return 0xff; }
+		uint8_t value([[maybe_unused]] int port) { return 0xff; }
 };
 
 // TODO: Modes 1 and 2.
@@ -64,11 +64,11 @@ template <class T> class i8255 {
 		*/
 		uint8_t read(int address) {
 			switch(address & 3) {
-				case 0:	return (control_ & 0x10) ? port_handler_.get_value(0) : outputs_[0];
-				case 1:	return (control_ & 0x02) ? port_handler_.get_value(1) : outputs_[1];
+				case 0:	return (control_ & 0x10) ? port_handler_.value(0) : outputs_[0];
+				case 1:	return (control_ & 0x02) ? port_handler_.value(1) : outputs_[1];
 				case 2:	{
 					if(!(control_ & 0x09)) return outputs_[2];
-					uint8_t input = port_handler_.get_value(2);
+					uint8_t input = port_handler_.value(2);
 					return ((control_ & 0x01) ? (input & 0x0f) : (outputs_[2] & 0x0f)) | ((control_ & 0x08) ? (input & 0xf0) : (outputs_[2] & 0xf0));
 				}
 				case 3:	return control_;

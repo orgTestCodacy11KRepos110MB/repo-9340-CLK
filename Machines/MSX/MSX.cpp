@@ -721,7 +721,7 @@ class ConcreteMachine:
 					}
 				}
 
-				uint8_t get_value(int port) {
+				uint8_t value(int port) {
 					if(port == 1) {
 						return machine_.read_keyboard();
 					} else LOG("MSX attempted to read from 8255 port " << port);

@@ -724,7 +724,7 @@ class i8255PortHandler : public Intel::i8255::PortHandler {
 		}
 
 		/// The i8255 will call this to obtain a new input for @c port.
-		uint8_t get_value(int port) {
+		uint8_t value(int port) {
 			switch(port) {
 				case 0: return ay_.ay().get_data_output();	// Port A is wired to the AY
 				case 1:	return

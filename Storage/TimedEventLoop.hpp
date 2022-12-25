@@ -52,12 +52,12 @@ namespace Storage {
 			/*!
 				@returns the number of whole cycles remaining until the next event is triggered.
 			*/
-			Cycles::IntType get_cycles_until_next_event() const;
+			Cycles::IntType cycles_until_next_event() const;
 
 			/*!
 				@returns the input clock rate.
 			*/
-			Cycles::IntType get_input_clock_rate() const;
+			Cycles::IntType input_clock_rate() const;
 
 		protected:
 			/*!
@@ -98,7 +98,7 @@ namespace Storage {
 				@returns the amount of time that has passed since the last call to @c set_next_time_interval,
 				which will always be less than or equal to the time that was supplied to @c set_next_time_interval.
 			*/
-			Time get_time_into_next_event();
+			Time time_into_next_event();
 
 		private:
 			Cycles::IntType input_clock_rate_ = 0;

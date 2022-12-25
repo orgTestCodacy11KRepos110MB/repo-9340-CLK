@@ -45,11 +45,11 @@ void TimedEventLoop::run_for(const Cycles cycles) {
 	assert(cycles_until_event_ > 0);
 }
 
-Cycles::IntType TimedEventLoop::get_cycles_until_next_event() const {
+Cycles::IntType TimedEventLoop::cycles_until_next_event() const {
 	return std::max(cycles_until_event_, Cycles::IntType(0));
 }
 
-Cycles::IntType TimedEventLoop::get_input_clock_rate() const {
+Cycles::IntType TimedEventLoop::input_clock_rate() const {
 	return input_clock_rate_;
 }
 
@@ -81,7 +81,7 @@ void TimedEventLoop::set_next_event_time_interval(float interval) {
 	assert(subcycles_until_event_ >= 0.0f);
 }
 
-Time TimedEventLoop::get_time_into_next_event() {
+Time TimedEventLoop::time_into_next_event() {
 	// TODO: calculate, presumably as [length of interval] - ([cycles left] + [subcycles left])
 	Time zero;
 	return zero;

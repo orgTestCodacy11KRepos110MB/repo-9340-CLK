@@ -130,16 +130,16 @@ bool DoubleDensityDrive::read() {
 
 		case CA0|SEL:			// Disk locked.
 								// (0 = write protected)
-		return !get_is_read_only();
+		return !is_read_only();
 
 		case CA1:				// Disk motor running.
 								// (0 = motor on)
-		return !get_motor_on();
+		return !motor_on();
 
 		case CA1|SEL:			// Head at track 0.
 								// (0 = at track 0)
 								// "This bit becomes valid beginning 12 msec after the step that places the head at track 0."
-		return !get_is_track_zero();
+		return !is_track_zero();
 
 		case CA1|CA0:			// Disk has been ejected.
 								// (1 = user has ejected disk)
@@ -150,7 +150,7 @@ bool DoubleDensityDrive::read() {
 
 		case CA1|CA0|SEL:		// Tachometer.
 								// (arbitrary)
-		return get_tachometer();
+		return tachometer();
 
 		case CA2:				// Read data, lower head.
 			set_head(0);
@@ -162,7 +162,7 @@ bool DoubleDensityDrive::read() {
 
 		case CA2|CA1:			// Single- or double-sided drive.
 								// (0 = single sided)
-		return get_head_count() != 1;
+		return head_count() != 1;
 
 		case CA2|CA1|CA0:		// "Present/HD" (per the Mac Plus ROM)
 								// (0 = ??HD??)

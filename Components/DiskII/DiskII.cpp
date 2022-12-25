@@ -168,7 +168,7 @@ void DiskII::decide_clocking_preference() {
 }
 
 bool DiskII::is_write_protected() {
-	return !!(stepper_mask_ & 2) | drives_[active_drive_].get_is_read_only();
+	return !!(stepper_mask_ & 2) | drives_[active_drive_].is_read_only();
 }
 
 void DiskII::set_state_machine(const std::vector<uint8_t> &state_machine) {

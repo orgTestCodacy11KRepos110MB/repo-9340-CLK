@@ -185,7 +185,7 @@ void Chipset::DiskController::set_mtr_sel_side_dir_step(uint8_t value) {
 				LOG("Shifted drive ID shift register for drive " << +c << " to " << PADHEX(4) << std::bitset<16>{drive_ids_[c]});
 			} else {
 				// Motor transition on -> off => reload register.
-				if(!motor_on && drive.get_motor_on()) {
+				if(!motor_on && drive.motor_on()) {
 					// NB:
 					//	0xffff'ffff	= 3.5" drive;
 					//	0x5555'5555 = 5.25" drive;
@@ -230,10 +230,10 @@ uint8_t Chipset::DiskController::get_rdy_trk0_wpro_chng() {
 	auto &drive = get_drive();
 	const uint8_t active_high =
 		((combined_id & 0x8000) >> 10) |
-		(drive.get_motor_on() ? 0x20 : 0x00) |
-		(drive.get_is_ready() ? 0x00 : 0x04) |
-		(drive.get_is_track_zero() ? 0x10 : 0x00) |
-		(drive.get_is_read_only() ? 0x08 : 0x00);
+		(drive.motor_on() ? 0x20 : 0x00) |
+		(drive.is_ready() ? 0x00 : 0x04) |
+		(drive.is_track_zero() ? 0x10 : 0x00) |
+		(drive.is_read_only() ? 0x08 : 0x00);
 
 	return ~active_high;
 }

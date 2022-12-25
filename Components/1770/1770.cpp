@@ -75,8 +75,8 @@ uint8_t WD1770::read(int address) {
 					status |=
 						(status_.track_zero ? Flag::TrackZero : 0) |
 						(status_.seek_error ? Flag::SeekError : 0) |
-						(get_drive().get_is_read_only() ? Flag::WriteProtect : 0) |
-						(get_drive().get_index_pulse() ? Flag::Index : 0);
+						(get_drive().is_read_only() ? Flag::WriteProtect : 0) |
+						(get_drive().index_pulse() ? Flag::Index : 0);
 				break;
 
 				case Status::Two:
@@ -91,11 +91,11 @@ uint8_t WD1770::read(int address) {
 			}
 
 			if(!has_motor_on_line()) {
-				status |= get_drive().get_is_ready() ? 0 : Flag::NotReady;
+				status |= get_drive().is_ready() ? 0 : Flag::NotReady;
 				if(status_.type == Status::One)
 					status |= (head_is_loaded_ ? Flag::HeadLoaded : 0);
 			} else {
-				status |= (get_drive().get_motor_on() ? Flag::MotorOn : 0);
+				status |= (get_drive().motor_on() ? Flag::MotorOn : 0);
 				if(status_.type == Status::One)
 					status |= (status_.spin_up ? Flag::SpinUp : 0);
 			}
@@ -276,7 +276,7 @@ void WD1770::posit_event(int new_event_type) {
 		goto test_type1_type;
 
 	begin_type1_spin_up:
-		if((command_&0x08) || get_drive().get_motor_on()) {
+		if((command_&0x08) || get_drive().motor_on()) {
 			set_motor_on(true);
 			goto test_type1_type;
 		}
@@ -302,7 +302,7 @@ void WD1770::posit_event(int new_event_type) {
 		if(step_direction_) ++track_; else --track_;
 
 	perform_step:
-		if(!step_direction_ && get_drive().get_is_track_zero()) {
+		if(!step_direction_ && get_drive().is_track_zero()) {
 			track_ = 0;
 			goto verify_seek;
 		}
@@ -325,7 +325,7 @@ void WD1770::posit_event(int new_event_type) {
 
 	verify_seek:
 		update_status([this] (Status &status) {
-			status.track_zero = get_drive().get_is_track_zero();
+			status.track_zero = get_drive().is_track_zero();
 		});
 		if(!(command_ & 0x04)) {
 			goto wait_for_command;
@@ -405,7 +405,7 @@ void WD1770::posit_event(int new_event_type) {
 		goto test_type2_delay;
 
 	begin_type2_spin_up:
-		if(get_drive().get_motor_on()) goto test_type2_delay;
+		if(get_drive().motor_on()) goto test_type2_delay;
 		// Perform spin up.
 		SPIN_UP();
 
@@ -415,7 +415,7 @@ void WD1770::posit_event(int new_event_type) {
 		WAIT_FOR_TIME(30);
 
 	test_type2_write_protection:
-		if(command_&0x20 && get_drive().get_is_read_only()) {
+		if(command_&0x20 && get_drive().is_read_only()) {
 			update_status([] (Status &status) {
 				status.write_protect = true;
 			});
@@ -632,7 +632,7 @@ void WD1770::posit_event(int new_event_type) {
 		goto type3_test_delay;
 
 	begin_type3_spin_up:
-		if((command_&0x08) || get_drive().get_motor_on()) goto type3_test_delay;
+		if((command_&0x08) || get_drive().motor_on()) goto type3_test_delay;
 		SPIN_UP();
 
 	type3_test_delay:
@@ -714,7 +714,7 @@ void WD1770::posit_event(int new_event_type) {
 			status.lost_data = false;
 		});
 
-		if(get_drive().get_is_read_only()) {
+		if(get_drive().is_read_only()) {
 			update_status([] (Status &status) {
 				status.write_protect = true;
 			});

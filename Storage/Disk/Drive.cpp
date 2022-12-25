@@ -40,11 +40,11 @@ Drive::Drive(int input_clock_rate, int number_of_heads, ReadyType rdy_type) : Dr
 
 void Drive::set_rotation_speed(float revolutions_per_minute) {
 	// Rationalise the supplied speed so that cycles_per_revolution_ is exact.
-	cycles_per_revolution_ = int(0.5f + float(get_input_clock_rate()) * 60.0f / revolutions_per_minute);
+	cycles_per_revolution_ = int(0.5f + float(input_clock_rate()) * 60.0f / revolutions_per_minute);
 
 	// From there derive the appropriate rotational multiplier and possibly update the
 	// count of cycles since the index hole proportionally.
-	const float new_rotational_multiplier = float(cycles_per_revolution_) / float(get_input_clock_rate());
+	const float new_rotational_multiplier = float(cycles_per_revolution_) / float(input_clock_rate());
 	cycles_since_index_hole_ = Cycles::IntType(float(cycles_since_index_hole_) * new_rotational_multiplier / rotational_multiplier_);
 	rotational_multiplier_ = new_rotational_multiplier;
 	cycles_since_index_hole_ %= cycles_per_revolution_;
@@ -76,7 +76,7 @@ ClockingHint::Preference Drive::preferred_clocking() const {
 	return (!has_disk_ || (time_until_motor_transition == Cycles(0) && !disk_is_rotating_)) ? ClockingHint::Preference::None : ClockingHint::Preference::JustInTime;
 }
 
-bool Drive::get_is_track_zero() const {
+bool Drive::is_track_zero() const {
 	return head_position_ == HeadPosition(0);
 }
 
@@ -127,34 +127,34 @@ void Drive::set_head(int head) {
 	}
 }
 
-int Drive::get_head_count() const {
+int Drive::head_count() const {
 	return available_heads_;
 }
 
-bool Drive::get_tachometer() const {
+bool Drive::tachometer() const {
 	// I have made a guess here that the tachometer is a symmetric square wave;
 	// if that is correct then around 60 beats per rotation appears to be correct
 	// to proceed beyond the speed checks I've so far uncovered.
 	constexpr float ticks_per_rotation = 60.0f; // 56 was too low; 64 too high.
-	return int(get_rotation() * 2.0f * ticks_per_rotation) & 1;
+	return int(rotation() * 2.0f * ticks_per_rotation) & 1;
 }
 
-float Drive::get_rotation() const {
-	return get_time_into_track();
+float Drive::rotation() const {
+	return time_into_track();
 }
 
-float Drive::get_time_into_track() const {
+float Drive::time_into_track() const {
 	// i.e. amount of time since the index hole was seen, as a proportion of a second,
 	// converted to a proportion of a rotation.
-	return float(cycles_since_index_hole_) / (float(get_input_clock_rate()) * rotational_multiplier_);
+	return float(cycles_since_index_hole_) / (float(input_clock_rate()) * rotational_multiplier_);
 }
 
-bool Drive::get_is_read_only() const {
+bool Drive::is_read_only() const {
 	if(disk_) return disk_->get_is_read_only();
 	return true;
 }
 
-bool Drive::get_is_ready() const {
+bool Drive::is_ready() const {
 	return is_ready_;
 }
 
@@ -182,14 +182,14 @@ void Drive::set_motor_on(bool motor_is_on) {
 	// This is a transition from on to off. Simulate momentum (ha!)
 	// by delaying the time until complete standstill.
 	if(time_until_motor_transition == Cycles(0))
-		time_until_motor_transition = get_input_clock_rate();
+		time_until_motor_transition = input_clock_rate();
 }
 
-bool Drive::get_motor_on() const {
+bool Drive::motor_on() const {
 	return motor_input_is_on_;
 }
 
-bool Drive::get_index_pulse() const {
+bool Drive::index_pulse() const {
 	return index_pulse_remaining_ > Cycles(0);
 }
 
@@ -221,8 +221,7 @@ void Drive::run_for(const Cycles cycles) {
 
 			auto number_of_cycles = cycles.as_integral();
 			while(number_of_cycles) {
-				auto cycles_until_next_event = get_cycles_until_next_event();
-				auto cycles_to_run_for = std::min(cycles_until_next_event, number_of_cycles);
+				auto cycles_to_run_for = std::min(cycles_until_next_event(), number_of_cycles);
 				if(!is_reading_ && cycles_until_bits_written_ > zero) {
 					auto write_cycles_target = cycles_until_bits_written_.get<Cycles::IntType>();
 					if(cycles_until_bits_written_.length % cycles_until_bits_written_.clock_rate) ++write_cycles_target;
@@ -329,7 +328,7 @@ void Drive::process_next_event() {
 		cycles_since_index_hole_ = 0;
 
 		// Begin a 2ms period of holding the index line pulse active.
-		index_pulse_remaining_ = Cycles((get_input_clock_rate() * 2) / 1000);
+		index_pulse_remaining_ = Cycles((input_clock_rate() * 2) / 1000);
 	}
 	if(
 		event_delegate_ &&
@@ -342,7 +341,7 @@ void Drive::process_next_event() {
 
 // MARK: - Track management
 
-std::shared_ptr<Track> Drive::get_track() {
+std::shared_ptr<Track> Drive::track() {
 	if(disk_) return disk_->get_track_at_position(Track::Address(head_, head_position_));
 	return nullptr;
 }
@@ -352,13 +351,13 @@ void Drive::set_track(const std::shared_ptr<Track> &track) {
 }
 
 void Drive::setup_track() {
-	track_ = get_track();
+	track_ = track();
 	if(!track_) {
 		track_ = std::make_shared<UnformattedTrack>();
 	}
 
 	float offset = 0.0f;
-	const float track_time_now = get_time_into_track();
+	const float track_time_now = time_into_track();
 	const float time_found = track_->seek_to(track_time_now);
 
 	// `time_found` can be greater than `track_time_now` if limited precision caused rounding.
@@ -398,13 +397,13 @@ void Drive::begin_writing(Time bit_length, bool clamp_to_index_hole) {
 	is_reading_ = false;
 	clamp_writing_to_index_hole_ = clamp_to_index_hole;
 
-	cycles_per_bit_ = Storage::Time(int(get_input_clock_rate())) * bit_length;
+	cycles_per_bit_ = Storage::Time(int(input_clock_rate())) * bit_length;
 	cycles_per_bit_.simplify();
 
 	write_segment_.length_of_a_bit = bit_length / Time(rotational_multiplier_);
 	write_segment_.data.clear();
 
-	write_start_time_ = Time(get_time_into_track());
+	write_start_time_ = Time(time_into_track());
 }
 
 void Drive::write_bit(bool value) {

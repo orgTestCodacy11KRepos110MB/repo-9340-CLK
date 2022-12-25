@@ -28,7 +28,7 @@ std::unique_ptr<Parser::FileSpeed> Parser::find_header(Storage::Tape::BinaryTape
 	while(!tape_player.get_tape()->is_at_end()) {
 		float next_length = 0.0f;
 		do {
-			next_length += float(tape_player.get_cycles_until_next_event()) / float(tape_player.get_input_clock_rate());
+			next_length += float(tape_player.cycles_until_next_event()) / float(tape_player.input_clock_rate());
 			tape_player.run_for_input_pulse();
 		} while(last_level == tape_player.get_input());
 		last_level = tape_player.get_input();
@@ -51,7 +51,7 @@ std::unique_ptr<Parser::FileSpeed> Parser::find_header(Storage::Tape::BinaryTape
 	float total_length = 0.0f;
 	samples = 512;
 	while(!tape_player.get_tape()->is_at_end()) {
-		total_length += float(tape_player.get_cycles_until_next_event()) / float(tape_player.get_input_clock_rate());
+		total_length += float(tape_player.cycles_until_next_event()) / float(tape_player.input_clock_rate());
 		if(tape_player.get_input() != last_level) {
 			samples--;
 			if(!samples) break;
@@ -108,7 +108,7 @@ int Parser::get_byte(const FileSpeed &speed, Storage::Tape::BinaryTapePlayer &ta
 		bool level = tape_player.get_input();
 		float duration = 0.0;
 		while(level == tape_player.get_input()) {
-			duration += float(tape_player.get_cycles_until_next_event()) / float(tape_player.get_input_clock_rate());
+			duration += float(tape_player.cycles_until_next_event()) / float(tape_player.input_clock_rate());
 			tape_player.run_for_input_pulse();
 		}
 
@@ -128,7 +128,7 @@ int Parser::get_byte(const FileSpeed &speed, Storage::Tape::BinaryTapePlayer &ta
 		0.5f +
 		float(speed.low_high_disrimination_duration) *
 		0.0000173f *
-		float(tape_player.get_input_clock_rate())
+		float(tape_player.input_clock_rate())
 	);
 	int bits_left = 8;
 	bool level = tape_player.get_input();
@@ -137,7 +137,7 @@ int Parser::get_byte(const FileSpeed &speed, Storage::Tape::BinaryTapePlayer &ta
 		int transitions = 0;
 		int cycles_remaining = cycles_per_window;
 		while(!tape_player.get_tape()->is_at_end() && cycles_remaining) {
-			const int cycles_until_next_event = int(tape_player.get_cycles_until_next_event());
+			const int cycles_until_next_event = int(tape_player.cycles_until_next_event());
 			const int cycles_to_run_for = std::min(cycles_until_next_event, cycles_remaining);
 
 			cycles_remaining -= cycles_to_run_for;

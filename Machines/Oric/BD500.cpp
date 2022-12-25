@@ -89,7 +89,7 @@ void BD500::set_head_load_request(bool head_load) {
 void BD500::run_for(const Cycles cycles) {
 	// If a head load is in progress and the selected drive is now ready,
 	// declare head loaded.
-	if(is_loading_head_ && get_drive().get_is_ready()) {
+	if(is_loading_head_ && get_drive().is_ready()) {
 		set_head_loaded(true);
 		is_loading_head_ = false;
 	}

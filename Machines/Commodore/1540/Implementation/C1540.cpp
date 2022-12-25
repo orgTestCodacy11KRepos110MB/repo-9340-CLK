@@ -105,21 +105,21 @@ Cycles MachineBase::perform_bus_operation(CPU::MOS6502::BusOperation operation, 
 }
 
 void Machine::set_disk(std::shared_ptr<Storage::Disk::Disk> disk) {
-	get_drive().set_disk(disk);
+	drive().set_disk(disk);
 }
 
 void Machine::run_for(const Cycles cycles) {
 	m6502_.run_for(cycles);
 
 	const bool drive_motor = drive_VIA_port_handler_.get_motor_enabled();
-	get_drive().set_motor_on(drive_motor);
+	drive().set_motor_on(drive_motor);
 	if(drive_motor)
 		Storage::Disk::Controller::run_for(cycles);
 }
 
 void MachineBase::set_activity_observer(Activity::Observer *observer) {
 	drive_VIA_.bus_handler().set_activity_observer(observer);
-	get_drive().set_activity_observer(observer, "Drive", false);
+	drive().set_activity_observer(observer, "Drive", false);
 }
 
 // MARK: - 6522 delegate
@@ -156,7 +156,7 @@ void MachineBase::process_index_hole()	{}
 // MARK: - Drive VIA delegate
 
 void MachineBase::drive_via_did_step_head(void *, int direction) {
-	get_drive().step(Storage::Disk::HeadPosition(direction, 2));
+	drive().step(Storage::Disk::HeadPosition(direction, 2));
 }
 
 void MachineBase::drive_via_did_set_data_density(void *, int density) {

@@ -49,26 +49,26 @@ void EXDos::set_control_register(uint8_t control) {
 	}
 
 	// Select drive, ensuring handover of the motor-on state.
-	const bool motor_state = get_drive().motor_on();
+	const bool motor_state = drive().motor_on();
 	for_all_drives([] (Storage::Disk::Drive &drive, size_t) {
 		drive.set_motor_on(false);
 	});
 	set_drive(control & 0xf);
-	get_drive().set_motor_on(motor_state);
+	drive().set_motor_on(motor_state);
 }
 
 uint8_t EXDos::get_control_register() {
 	const uint8_t status =
-		(get_data_request_line() ? 0x80 : 0x00) |
+		(data_request_line() ? 0x80 : 0x00) |
 		(disk_did_change_ ? 0x40 : 0x00) |
-		(get_interrupt_request_line() ? 0x02 : 0x00) |
-		(get_drive().is_ready() ? 0x01 : 0x00);
+		(interrupt_request_line() ? 0x02 : 0x00) |
+		(drive().is_ready() ? 0x01 : 0x00);
 
 	return status;
 }
 
 void EXDos::set_motor_on(bool on) {
-	get_drive().set_motor_on(on);
+	drive().set_motor_on(on);
 }
 
 void EXDos::set_activity_observer(Activity::Observer *observer) {

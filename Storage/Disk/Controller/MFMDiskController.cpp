@@ -85,12 +85,12 @@ void MFMController::process_input_bit(int value) {
 
 void MFMController::write_bit(int bit) {
 	if(is_double_density_) {
-		get_drive().write_bit(!bit && !last_bit_);
-		get_drive().write_bit(!!bit);
+		drive().write_bit(!bit && !last_bit_);
+		drive().write_bit(!!bit);
 		last_bit_ = bit;
 	} else {
-		get_drive().write_bit(true);
-		get_drive().write_bit(!!bit);
+		drive().write_bit(true);
+		drive().write_bit(!!bit);
 	}
 }
 
@@ -101,7 +101,7 @@ void MFMController::write_byte(uint8_t byte) {
 
 void MFMController::write_raw_short(uint16_t value) {
 	for(int c = 0; c < 16; c++) {
-		get_drive().write_bit(!!((value << c)&0x8000));
+		drive().write_bit(!!((value << c)&0x8000));
 	}
 }
 

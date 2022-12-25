@@ -54,7 +54,7 @@ uint8_t BD500::read(int address) {
 		case 0x0320: case 0x0321: case 0x0322: case 0x0323:
 		return WD::WD1770::read(address);
 
-		case 0x312:	return (get_data_request_line() ? 0x80 : 0x00) | (get_interrupt_request_line() ? 0x40 : 0x00);
+		case 0x312:	return (data_request_line() ? 0x80 : 0x00) | (interrupt_request_line() ? 0x40 : 0x00);
 	}
 }
 
@@ -89,7 +89,7 @@ void BD500::set_head_load_request(bool head_load) {
 void BD500::run_for(const Cycles cycles) {
 	// If a head load is in progress and the selected drive is now ready,
 	// declare head loaded.
-	if(is_loading_head_ && get_drive().is_ready()) {
+	if(is_loading_head_ && drive().is_ready()) {
 		set_head_loaded(true);
 		is_loading_head_ = false;
 	}
@@ -101,7 +101,7 @@ void BD500::set_activity_observer(Activity::Observer *observer) {
 	observer_ = observer;
 	if(observer) {
 		observer->register_led("BD-500");
-		observer_->set_led_status("BD-500", get_head_loaded());
+		observer_->set_led_status("BD-500", head_loaded());
 	}
 }
 

@@ -66,7 +66,7 @@ void Jasmin::write(int address, uint8_t value) {
 
 void Jasmin::set_motor_on(bool on) {
 	motor_on_ = on;
-	get_drive().set_motor_on(motor_on_);
+	drive().set_motor_on(motor_on_);
 	if(observer_) {
 		observer_->set_led_status("Jasmin", on);
 	}

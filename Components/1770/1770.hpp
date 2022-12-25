@@ -63,10 +63,10 @@ class WD1770: public Storage::Disk::MFMController {
 		};
 
 		/// @returns The current value of the IRQ line output.
-		inline bool get_interrupt_request_line() const	{	return status_.interrupt_request;	}
+		inline bool interrupt_request_line() const	{	return status_.interrupt_request;	}
 
 		/// @returns The current value of the DRQ line output.
-		inline bool get_data_request_line() const		{	return status_.data_request;		}
+		inline bool data_request_line() const		{	return status_.data_request;		}
 
 		class Delegate {
 			public:
@@ -82,7 +82,7 @@ class WD1770: public Storage::Disk::MFMController {
 		void set_head_loaded(bool head_loaded);
 
 		/// @returns The last value posted to @c set_head_loaded.
-		bool get_head_loaded() const;
+		bool head_loaded() const;
 
 	private:
 		const Personality personality_;

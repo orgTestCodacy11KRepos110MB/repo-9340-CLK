@@ -46,7 +46,7 @@ void Controller::run_for(const Cycles cycles) {
 	empty_drive_.run_for(cycles);
 }
 
-Drive &Controller::get_drive() {
+Drive &Controller::drive() {
 	return *drive_;
 }
 
@@ -94,7 +94,7 @@ void Controller::set_drive(int index_mask) {
 	const ClockingHint::Preference former_preference = preferred_clocking();
 
 	// Stop receiving events from the current drive.
-	get_drive().set_event_delegate(nullptr);
+	drive().set_event_delegate(nullptr);
 
 	// TODO: a transfer of writing state, if writing?
 
@@ -113,7 +113,7 @@ void Controller::set_drive(int index_mask) {
 		drive_ = drives_[index].get();
 	}
 
-	get_drive().set_event_delegate(this);
+	drive().set_event_delegate(this);
 
 	if(preferred_clocking() != former_preference) {
 		update_clocking_observer();
@@ -122,13 +122,13 @@ void Controller::set_drive(int index_mask) {
 
 void Controller::begin_writing(bool clamp_to_index_hole) {
 	is_reading_ = false;
-	get_drive().begin_writing(bit_length_, clamp_to_index_hole);
+	drive().begin_writing(bit_length_, clamp_to_index_hole);
 }
 
 void Controller::end_writing() {
 	if(!is_reading_) {
 		is_reading_ = true;
-		get_drive().end_writing();
+		drive().end_writing();
 	}
 }
 

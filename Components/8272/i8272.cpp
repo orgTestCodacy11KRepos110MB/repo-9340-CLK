@@ -120,7 +120,7 @@ void i8272::run_for(Cycles cycles) {
 					int direction = (drives_[c].target_head_position < drives_[c].head_position) ? -1 : 1;
 					LOG("Target " << PADDEC(0) << drives_[c].target_head_position << " versus believed " << int(drives_[c].head_position));
 					select_drive(c);
-					get_drive().step(Storage::Disk::HeadPosition(direction));
+					drive().step(Storage::Disk::HeadPosition(direction));
 					if(drives_[c].target_head_position >= 0) drives_[c].head_position += direction;
 
 					// Check for completion.
@@ -159,7 +159,7 @@ void i8272::run_for(Cycles cycles) {
 	}
 
 	// check for busy plus ready disabled
-	if(is_executing_ && !get_drive().is_ready()) {
+	if(is_executing_ && !drive().is_ready()) {
 		posit_event(int(Event8272::NoLongerReady));
 	}
 
@@ -237,7 +237,7 @@ uint8_t i8272::read(int address) {
 	active_head_ = (command_[1] >> 2)&1;	\
 	status_[0] = (command_[1]&7);	\
 	select_drive(active_drive_);	\
-	get_drive().set_head(active_head_);	\
+	drive().set_head(active_head_);	\
 	set_is_double_density(command_[0] & 0x40);
 
 #define WAIT_FOR_BYTES(n) \
@@ -346,7 +346,7 @@ void i8272::posit_event(int event_type) {
 				if(!dma_mode_) SetNonDMAExecution();
 				SET_DRIVE_HEAD_MFM();
 				LOAD_HEAD();
-				if(!get_drive().is_ready()) {
+				if(!drive().is_ready()) {
 					SetNotReady();
 					goto abort;
 				}
@@ -526,7 +526,7 @@ void i8272::posit_event(int event_type) {
 				<< int(command_[6]) << " "
 				<< int(command_[8]) << "]");
 
-			if(get_drive().is_read_only()) {
+			if(drive().is_read_only()) {
 				SetNotWriteable();
 				goto abort;
 			}
@@ -643,7 +643,7 @@ void i8272::posit_event(int event_type) {
 	// Performs format [/write] track.
 	format_track:
 			LOG("Format track");
-			if(get_drive().is_read_only()) {
+			if(drive().is_read_only()) {
 				SetNotWriteable();
 				goto abort;
 			}
@@ -820,15 +820,15 @@ void i8272::posit_event(int event_type) {
 	sense_drive_status:
 			LOG("Sense drive status");
 			{
-				int drive = command_[1] & 3;
-				select_drive(drive);
+				const int selected_drive = command_[1] & 3;
+				select_drive(selected_drive);
 				result_stack_= {
 					uint8_t(
 						(command_[1] & 7) |	// drive and head number
 						0x08 |				// single sided
-						(get_drive().is_track_zero() ? 0x10 : 0x00)	|
-						(get_drive().is_ready() ? 0x20 : 0x00)		|
-						(get_drive().is_read_only() ? 0x40 : 0x00)
+						(drive().is_track_zero() ? 0x10 : 0x00)	|
+						(drive().is_ready() ? 0x20 : 0x00)		|
+						(drive().is_read_only() ? 0x40 : 0x00)
 					)
 				};
 			}
@@ -879,9 +879,9 @@ void i8272::posit_event(int event_type) {
 	END_SECTION()
 }
 
-bool i8272::seek_is_satisfied(int drive) {
-	return	(drives_[drive].target_head_position == drives_[drive].head_position) ||
-			(drives_[drive].target_head_position == -1 && get_drive().is_track_zero());
+bool i8272::seek_is_satisfied(int drive_id) {
+	return	(drives_[drive_id].target_head_position == drives_[drive_id].head_position) ||
+			(drives_[drive_id].target_head_position == -1 && drive().is_track_zero());
 }
 
 void i8272::set_dma_acknowledge(bool) {

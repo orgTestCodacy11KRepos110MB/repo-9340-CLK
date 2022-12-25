@@ -756,7 +756,7 @@ template <Analyser::Static::Oric::Target::DiskInterface disk_interface, CPU::MOS
 
 			// The Jasmin reroutes its data request line to the processor's interrupt line.
 			if constexpr (disk_interface == DiskInterface::Jasmin) {
-				irq_line |= jasmin_.get_data_request_line();
+				irq_line |= jasmin_.data_request_line();
 			}
 
 			m6502_.set_irq_line(irq_line);

@@ -22,7 +22,7 @@ class CommodoreGCRParser: public Storage::Disk::Controller {
 		CommodoreGCRParser() : Storage::Disk::Controller(4000000), shift_register_(0), track_(1) {
 			emplace_drive(4000000, 300, 2);
 			set_drive(1);
-			get_drive().set_motor_on(true);
+			drive().set_motor_on(true);
 		}
 
 		struct Sector {
@@ -46,7 +46,7 @@ class CommodoreGCRParser: public Storage::Disk::Controller {
 				difference *= direction;
 
 				for(int c = 0; c < difference; c++) {
-					get_drive().step(Storage::Disk::HeadPosition(direction));
+					drive().step(Storage::Disk::HeadPosition(direction));
 				}
 
 				unsigned int zone = 3;
@@ -60,7 +60,7 @@ class CommodoreGCRParser: public Storage::Disk::Controller {
 		}
 
 		void set_disk(const std::shared_ptr<Storage::Disk::Disk> &disk) {
-			get_drive().set_disk(disk);
+			drive().set_disk(disk);
 		}
 
 	private:

@@ -30,7 +30,7 @@ class FDC: public Intel::i8272::i8272 {
 		}
 
 		void set_motor_on(bool on) {
-			get_drive().set_motor_on(on);
+			drive().set_motor_on(on);
 		}
 
 		void select_drive(int) {
@@ -38,11 +38,11 @@ class FDC: public Intel::i8272::i8272 {
 		}
 
 		void set_disk(std::shared_ptr<Storage::Disk::Disk> disk, int) {
-			get_drive().set_disk(disk);
+			drive().set_disk(disk);
 		}
 
 		void set_activity_observer(Activity::Observer *observer) {
-			get_drive().set_activity_observer(observer, "Drive 1", true);
+			drive().set_activity_observer(observer, "Drive 1", true);
 		}
 };
 

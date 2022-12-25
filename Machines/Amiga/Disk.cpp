@@ -227,13 +227,13 @@ uint8_t Chipset::DiskController::get_rdy_trk0_wpro_chng() {
 		((previous_select_ & 0x10) ? 0 : drive_ids_[1]) |
 		((previous_select_ & 0x08) ? 0 : drive_ids_[0]);
 
-	auto &drive = get_drive();
+	auto &active_drive = drive();
 	const uint8_t active_high =
 		((combined_id & 0x8000) >> 10) |
-		(drive.motor_on() ? 0x20 : 0x00) |
-		(drive.is_ready() ? 0x00 : 0x04) |
-		(drive.is_track_zero() ? 0x10 : 0x00) |
-		(drive.is_read_only() ? 0x08 : 0x00);
+		(active_drive.motor_on() ? 0x20 : 0x00) |
+		(active_drive.is_ready() ? 0x00 : 0x04) |
+		(active_drive.is_track_zero() ? 0x10 : 0x00) |
+		(active_drive.is_read_only() ? 0x08 : 0x00);
 
 	return ~active_high;
 }

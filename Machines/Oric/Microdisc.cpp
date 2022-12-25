@@ -74,15 +74,15 @@ void Microdisc::set_control_register(uint8_t control, uint8_t changes) {
 }
 
 bool Microdisc::get_interrupt_request_line() {
-	return irq_enable_ && WD1770::get_interrupt_request_line();
+	return irq_enable_ && WD1770::interrupt_request_line();
 }
 
 uint8_t Microdisc::get_interrupt_request_register() {
-	return 0x7f | (WD1770::get_interrupt_request_line() ? 0x00 : 0x80);
+	return 0x7f | (WD1770::interrupt_request_line() ? 0x00 : 0x80);
 }
 
 uint8_t Microdisc::get_data_request_register() {
-	return 0x7f | (get_data_request_line() ? 0x00 : 0x80);
+	return 0x7f | (data_request_line() ? 0x00 : 0x80);
 }
 
 void Microdisc::set_head_load_request(bool head_load) {

@@ -118,7 +118,7 @@ class Controller:
 			Returns the connected drive or, if none is connected, an invented one. No guarantees are
 			made about the lifetime or the exclusivity of the invented drive.
 		*/
-		Drive &get_drive();
+		Drive &drive();
 
 		Drive &get_drive(size_t index) {
 			return *drives_[index];

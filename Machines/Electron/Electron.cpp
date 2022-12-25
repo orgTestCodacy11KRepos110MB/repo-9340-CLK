@@ -563,7 +563,7 @@ template <bool has_scsi_bus> class ConcreteMachine:
 		}
 
 		HalfCycles get_typer_delay(const std::string &text) const final {
-			if(!m6502_.get_is_resetting()) {
+			if(!m6502_.is_resetting()) {
 				return Cycles(0);
 			}
 

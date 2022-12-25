@@ -661,7 +661,7 @@ template <bool has_disk_controller, bool is_6mhz> class ConcreteMachine:
 		void type_string(const std::string &string) final {
 			Utility::TypeRecipient<CharacterMapper>::add_typer(string);
 
-			if(z80_.get_is_resetting()) {
+			if(z80_.is_resetting()) {
 				should_skip_splash_screen_ = true;
 				typer_delay_ = 1;
 			} else {

@@ -149,7 +149,7 @@ template<bool is_zx81> class ConcreteMachine:
 				tape_advance_delay_ = std::max(tape_advance_delay_ - cycle.length, HalfCycles(0));
 			}
 
-			if(nmi_is_enabled_ && !z80_.get_halt_line() && z80_.get_non_maskable_interrupt_line()) {
+			if(nmi_is_enabled_ && !z80_.halt_line() && z80_.non_maskable_interrupt_line()) {
 				z80_.set_wait_line(true);
 			}
 
@@ -271,7 +271,7 @@ template<bool is_zx81> class ConcreteMachine:
 						// If this is an M1 cycle reading from above the 32kb mark and HALT is not
 						// currently active, latch for video output and return a NOP. Otherwise,
 						// just return the value as read.
-						if(is_opcode_read && address&0x8000 && !(value & 0x40) && !z80_.get_halt_line()) {
+						if(is_opcode_read && address&0x8000 && !(value & 0x40) && !z80_.halt_line()) {
 							latched_video_byte_ = value;
 							has_latched_video_byte_ = true;
 							*cycle.value = 0;
@@ -370,7 +370,7 @@ template<bool is_zx81> class ConcreteMachine:
 
 		// MARK: - Typer timing
 		HalfCycles get_typer_delay(const std::string &) const final {
-			return z80_.get_is_resetting() ? Cycles(7'000'000) : Cycles(0);
+			return z80_.is_resetting() ? Cycles(7'000'000) : Cycles(0);
 		}
 
 		HalfCycles get_typer_frequency() const final {

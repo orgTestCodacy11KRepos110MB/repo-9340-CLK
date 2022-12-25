@@ -666,7 +666,7 @@ void ProcessorBase::set_reset_line(bool active) {
 	interrupt_requests_ = (interrupt_requests_ & ~InterruptRequestFlags::Reset) | (active ? InterruptRequestFlags::Reset : 0);
 }
 
-bool ProcessorBase::get_is_resetting() const {
+bool ProcessorBase::is_resetting() const {
 	return interrupt_requests_ & (InterruptRequestFlags::Reset | InterruptRequestFlags::PowerOn);
 }
 

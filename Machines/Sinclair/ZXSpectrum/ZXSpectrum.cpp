@@ -652,7 +652,7 @@ template<Model model> class ConcreteMachine:
 
 		// MARK: - Typer.
 		HalfCycles get_typer_delay(const std::string &) const override {
-			return z80_.get_is_resetting() ? Cycles(7'000'000) : Cycles(0);
+			return z80_.is_resetting() ? Cycles(7'000'000) : Cycles(0);
 		}
 
 		HalfCycles get_typer_frequency() const override{

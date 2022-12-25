@@ -42,7 +42,7 @@ class ProcessorBase: protected ProcessorStorage {
 		inline void set_nmi_line(bool);
 		inline void set_reset_line(bool);
 		inline void set_abort_line(bool);
-		inline bool get_is_resetting() const;
+		inline bool is_resetting() const;
 
 		/*!
 			Returns the current state of all lines not ordinarily pushed to the BusHandler,

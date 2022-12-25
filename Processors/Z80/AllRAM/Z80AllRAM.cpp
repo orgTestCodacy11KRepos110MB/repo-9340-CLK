@@ -91,7 +91,7 @@ class ConcreteAllRAMProcessor: public AllRAMProcessor, public BusHandler {
 		}
 
 		bool get_halt_line() final {
-			return z80_.get_halt_line();
+			return z80_.halt_line();
 		}
 
 		void reset_power_on() final {

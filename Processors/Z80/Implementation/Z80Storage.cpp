@@ -535,6 +535,6 @@ bool ProcessorBase::is_starting_new_instruction() const {
 		scheduled_program_counter_ == &base_page_.fetch_decode_execute[0];
 }
 
-bool ProcessorBase::get_is_resetting() const {
+bool ProcessorBase::is_resetting() const {
 	return request_status_ & (Interrupt::PowerOn | Interrupt::Reset);
 }

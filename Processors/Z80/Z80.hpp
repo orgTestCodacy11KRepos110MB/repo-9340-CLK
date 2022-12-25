@@ -431,7 +431,7 @@ class ProcessorBase: public ProcessorStorage {
 		/*!
 			Gets the value of the HALT output line.
 		*/
-		inline bool get_halt_line() const;
+		inline bool halt_line() const;
 
 		/*!
 			Sets the logical value of the interrupt line.
@@ -445,7 +445,7 @@ class ProcessorBase: public ProcessorStorage {
 		/*!
 			Gets the value of the interrupt line.
 		*/
-		inline bool get_interrupt_line() const;
+		inline bool interrupt_line() const;
 
 		/*!
 			Sets the logical value of the non-maskable interrupt line.
@@ -457,7 +457,7 @@ class ProcessorBase: public ProcessorStorage {
 		/*!
 			Gets the value of the non-maskable interrupt line.
 		*/
-		inline bool get_non_maskable_interrupt_line() const;
+		inline bool non_maskable_interrupt_line() const;
 
 		/*!
 			Sets the logical value of the reset line.
@@ -469,7 +469,7 @@ class ProcessorBase: public ProcessorStorage {
 
 			@returns @c true if the line is logically active; @c false otherwise.
 		*/
-		bool get_is_resetting() const;
+		bool is_resetting() const;
 
 		/*!
 			This emulation automatically sets itself up in power-on state at creation, which has the effect of triggering a
@@ -516,7 +516,7 @@ template <class T, bool uses_bus_request, bool uses_wait_line> class Processor: 
 		/*!
 			Gets the logical value of the bus request line.
 		*/
-		bool get_bus_request_line() const;
+		bool bus_request_line() const;
 
 		/*!
 			Sets the logical value of the wait line, having asserted that this Z80 supports the wait line.
@@ -526,7 +526,7 @@ template <class T, bool uses_bus_request, bool uses_wait_line> class Processor: 
 		/*!
 			Gets the logical value of the bus request line.
 		*/
-		bool get_wait_line() const;
+		bool wait_line() const;
 
 	private:
 		T &bus_handler_;

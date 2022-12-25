@@ -1123,7 +1123,7 @@ template <bool has_fdc> class ConcreteMachine:
 		}
 
 		HalfCycles get_typer_delay(const std::string &) const final {
-			return z80_.get_is_resetting() ? Cycles(3'400'000) : Cycles(0);
+			return z80_.is_resetting() ? Cycles(3'400'000) : Cycles(0);
 		}
 
 		HalfCycles get_typer_frequency() const final {

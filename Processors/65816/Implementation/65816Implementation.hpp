@@ -1088,7 +1088,7 @@ template <typename BusHandler, bool uses_ready_line> void Processor<BusHandler, 
 // The 65816 can't jam.
 bool ProcessorBase::is_jammed() const { return false; }
 
-bool ProcessorBase::get_is_resetting() const {
+bool ProcessorBase::is_resetting() const {
 	return pending_exceptions_ & (Reset | PowerOn);
 }
 

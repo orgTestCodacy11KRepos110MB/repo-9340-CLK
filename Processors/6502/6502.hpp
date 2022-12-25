@@ -89,7 +89,7 @@ class ProcessorBase: public ProcessorStorage {
 
 			@returns @c true if the line is logically active; @c false otherwise.
 		*/
-		inline bool get_is_resetting() const;
+		inline bool is_resetting() const;
 
 		/*!
 			This emulation automatically sets itself up in power-on state at creation, which has the effect of triggering a

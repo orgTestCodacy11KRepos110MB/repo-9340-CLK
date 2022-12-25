@@ -354,7 +354,7 @@ class ConcreteMachine:
 
 		float get_confidence() final {
 			if(pc_zero_accesses_ > 1) return 0.0f;
-			return confidence_counter_.get_confidence();
+			return confidence_counter_.confidence();
 		}
 
 		// MARK: - Configuration options.

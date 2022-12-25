@@ -184,7 +184,7 @@ class ConcreteMachine:
 		}
 
 		float get_confidence() final {
-			return confidence_counter_.get_confidence();
+			return confidence_counter_.confidence();
 		}
 
 	private:

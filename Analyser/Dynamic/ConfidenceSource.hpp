@@ -19,7 +19,7 @@ namespace Dynamic {
 	program is handed to an Atari 2600 then its confidence should grow towards 1.0.
 */
 struct ConfidenceSource {
-	virtual float get_confidence() = 0;
+	virtual float confidence() = 0;
 };
 
 }
